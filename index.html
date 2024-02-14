@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="searchBox">
+            <input type="text" class="dishName" placeholder="Search recipe by Dish name..">
+            <button class="dishSearch">Search</button>
+        </div>
+    </div>
+    <div class="result">
+        <h3>Instructions</h3>
+    </div>
+
+    <script>
+        const baseUrl = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
+        const btn = document.querySelector('.dishSearch');
+        const result = document.querySelector('.result').syle.Display.none;
+        const ingList = document.querySelector('.ing-list')
+
+        btn.addEventListener("click", async () => {
+            const dishName = document.querySelector('.dishName').value;
+            if (!dishName) {
+                alert("Please enter a dish name.");
+                return;
+            }
+
+            try {
+                const response = await fetch(baseUrl + dishName);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                console.log(data);
+                if (data.meals) {
+                    result.innerHTML = `
+                        <h3>Instructions</h3>
+                        <h3>${data.meals[0].strMeal}</h3>
+                        <p class="instruction">${data.meals[0].strInstructions}</p>
+                    `;
+                } else {
+                    result.innerHTML = "<p>No meal found for this dish name.</p>";
+                }
+            } catch (error) {
+                console.log('Fetch error:', error);
+                result.innerHTML = "<p>Failed to fetch data. Please try again later.</p>";
+            }
+        });
+    </script>
+</body>
+
+</html>
